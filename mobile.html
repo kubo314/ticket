@@ -104,7 +104,7 @@
                 user-select: none;
             }
 
-            input[type="submit"] {
+            input[type="submit"], button {
                 background-color: #2589d0;
                 width: 100px;
                 height: 30px;
@@ -124,12 +124,12 @@
     </head>
 
     <body>
-        <div style="text-align: center; width: fit-content;">
+        <div style="text-align: center; width: fit-content; transform: scale(1.5);">
             <form 
             action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSe-TKvVo88lgxAPPar_Qoi2oX3ZzXPCZ2mOOc2BaN9Qhr41aA/formResponse"
             method="POST"
             target="hidden-iframe"
-            onsubmit="on_sending()"
+            onsubmit="on_submit()"
             >
                 <fieldset class="menu_of_ordered">
                     <label>
@@ -144,7 +144,7 @@
                 <input type="hidden" name="entry.1513818499" id="name_of_menu" required>
                 <hr>
                 注文番号<br>
-                <input type="text" name="entry.1682257267" id="ordered_number" required>
+                <input type="text" name="entry.1682257267" id="ordered_number" autocomplete="off" required>
                 <div style="width: 100%;display: flex;justify-content: center;">
                     <div style="width: fit-content;">
                         <div class="row_of_key">
@@ -171,11 +171,12 @@
 
                 <hr>
                 <div style="width: 100%;display: flex;justify-content: center;">
-                    <input type="submit" value="送信" disabled class="not_ok">
+                    <input type="submit" value="送信" disabled class="not_ok" id="s_button">
                 </div>
+                <button style="margin-top: 15px;" id="r_button">リセット</button>
             </form>
         </div>
-        <iframe name="hidden-iframe" style="display: none;" onload="on_submit()"></iframe>
+        <iframe name="hidden-iframe" style="display: none;"></iframe>
 
         <script src="https://riversun.github.io/jsframe/jsframe.js"></script>
         <script>
@@ -223,10 +224,12 @@
                 jsFrame.showToast({
                     html: `商品名:${document.querySelector("#name_of_menu").value}<br>注文番号:${document.querySelector("#ordered_number").value}<br>を送信しました`, align: "top", duration: 2000
                 });
-                form.reset();
                 document.body.style.pointerEvents = "auto";
                 document.body.style.opacity = 1;
             }
+            document.querySelector("#r_button").addEventListener("click", function() {
+                form.reset()
+            });
         </script>
     </body>
 
