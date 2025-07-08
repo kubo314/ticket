@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            .menu_of_ordered {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: .3em 2em;
+                border: none;
+                padding: 0;
+                margin: 0;
+                margin-bottom: 15px;
+            }
+
+            .menu_of_ordered label {
+                display: flex;
+                align-items: center;
+                gap: 0 .5em;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .menu_of_ordered label::before,
+            .menu_of_ordered label::after {
+                border-radius: 50%;
+                content: '';
+            }
+
+            .menu_of_ordered label::before {
+                width: 18px;
+                height: 18px;
+                border: 2px solid #dee5eb;
+                box-sizing: border-box;
+            }
+
+            .menu_of_ordered label::after {
+                position: absolute;
+                top: 50%;
+                left: 9px;
+                transform: translate(-50%, -50%);
+                width: 9px;
+                height: 9px;
+                background-color: #dee5eb;
+            }
+
+            .menu_of_ordered label:has(:checked)::after {
+                background-color: #2589d0;
+                animation: anim-menu_of_ordered .3s linear;
+            }
+
+            @keyframes anim-menu_of_ordered {
+                0% {
+                    box-shadow: 0 0 0 1px transparent;
+                }
+
+                50% {
+                    box-shadow: 0 0 0 10px #2589d033;
+                }
+
+                100% {
+                    box-shadow: 0 0 0 10px transparent;
+                }
+            }
+
+            .menu_of_ordered input {
+                display: none;
+            }
+
+            .row_of_key {
+                display: flex;
+                margin: 3px;
+                width: fit-content;
+            }
+            .key {
+                width: 50px;
+                height: 50px;
+                border-radius: 30px;
+                margin: 3px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                cursor: pointer;
+                background-color: gray;
+                color: #fff;
+                user-select: none;
+            }
+
+            input[type="submit"] {
+                background-color: #2589d0;
+                width: 100px;
+                height: 30px;
+                color: #fff;
+                cursor: pointer;
+            }
+            .not_ok {
+                opacity: 0.5;
+                cursor: not-allowed !important;
+            }
+            :has(#my_element) {
+                padding: 10px !important;
+                
+            }
+        </style>
+        <title>注文</title>
+    </head>
+
+    <body>
+        <div style="text-align: center; width: fit-content;">
+            <form 
+            action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSe-TKvVo88lgxAPPar_Qoi2oX3ZzXPCZ2mOOc2BaN9Qhr41aA/formResponse"
+            method="POST"
+            target="hidden-iframe"
+            onsubmit="on_sending()"
+            >
+                <fieldset class="menu_of_ordered">
+                    <label>
+                        <input type="radio" name="menu_of_ordered" value="肉まん" required>
+                        肉まん
+                    </label>
+                    <label>
+                        <input type="radio" name="menu_of_ordered" value="炒飯" required>
+                        炒飯
+                    </label>
+                </fieldset>
+                <input type="hidden" name="entry.1513818499" id="name_of_menu" required>
+                <hr>
+                注文番号<br>
+                <input type="text" name="entry.1682257267" id="ordered_number" required>
+                <div style="width: 100%;display: flex;justify-content: center;">
+                    <div style="width: fit-content;">
+                        <div class="row_of_key">
+                            <div class="key num">1</div>
+                            <div class="key num">2</div>
+                            <div class="key num">3</div>
+                        </div>
+                        <div class="row_of_key">
+                            <div class="key num">4</div>
+                            <div class="key num">5</div>
+                            <div class="key num">6</div>
+                        </div>
+                        <div class="row_of_key">
+                            <div class="key num">7</div>
+                            <div class="key num">8</div>
+                            <div class="key num">9</div>
+                        </div>
+                        <div style="width: 100%;display: flex; justify-content: right;">
+                            <div class="key num">0</div>
+                            <div class="back_space key" style="background-color: #000;color: #fff;">⌫</div>
+                        </div>
+                    </div>   
+                </div>
+
+                <hr>
+                <div style="width: 100%;display: flex;justify-content: center;">
+                    <input type="submit" value="送信" disabled class="not_ok">
+                </div>
+            </form>
+        </div>
+        <iframe name="hidden-iframe" style="display: none;" onload="on_submit()"></iframe>
+
+        <script src="https://riversun.github.io/jsframe/jsframe.js"></script>
+        <script>
+            const jsFrame = new JSFrame();
+    
+            const form = document.querySelector("form");
+            const submit_button = document.querySelector("input[type='submit']")
+
+            document.querySelectorAll(".key.num").forEach(function (elem){
+                elem.addEventListener("click", function() {
+                    document.querySelector("#ordered_number").value += elem.textContent;
+                });
+            });
+            document.querySelector(".back_space").addEventListener("click", function() {
+                document.querySelector("#ordered_number").value = document.querySelector("#ordered_number").value.slice(0, -1)
+            });
+            document.querySelectorAll('input[name="menu_of_ordered"]').forEach(function(elem){
+                elem.addEventListener("change", function () {
+                    document.querySelector("#name_of_menu").value = [...document.querySelectorAll('input[name="menu_of_ordered"]')].filter(function (elem) {return elem.checked})[0].value
+                })
+            })
+            
+            form.addEventListener("input", update);
+            form.addEventListener("change", update);
+            document.querySelectorAll(".key").forEach(function (elem){
+                elem.addEventListener("click", update);
+            });
+            function update() {
+                const isRequired = form.checkValidity();
+                if (isRequired) {
+                    submit_button.disabled = false;
+                    submit_button.classList.remove("not_ok");
+                    return
+                }else {
+                    submit_button.disabled = true;
+                    submit_button.classList.add("not_ok");
+                }
+            }
+            
+            function on_sending() {
+                document.body.style.pointerEvents = "none";
+                document.body.style.opacity = 0.5;
+            }
+            function on_submit() {
+                jsFrame.showToast({
+                    html: `商品名:${document.querySelector("#name_of_menu").value}<br>注文番号:${document.querySelector("#ordered_number").value}<br>を送信しました`, align: "top", duration: 2000
+                });
+                form.reset();
+                document.body.style.pointerEvents = "auto";
+                document.body.style.opacity = 1;
+            }
+        </script>
+    </body>
+
+</html>
